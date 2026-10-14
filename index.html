@@ -18,6 +18,7 @@
   --bfs: #1D4ED8; --bfs-soft: #E6EDFD;
   --log: #0F766E; --log-soft: #E1F3F1;
   --tel: #7C3AED; --tel-soft: #EFE8FD;
+  --io: #0E6F7A; --io-soft: #E0F1F3;
   --pass: #0B7A45; --pass-bg: #E3F4EA; --warn: #8A6100; --warn-bg: #FBF0D4;
   --block: #B42330; --block-bg: #FBE4E6; --review: #5B3FB8; --review-bg: #ECE6FB;
   --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
@@ -28,14 +29,14 @@
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #0C1220; --surface: #141C2E; --ink: #E7ECF5; --muted: #9AA6BC; --line: #26324A;
   --accent: #7FA2FF; --accent-ink: #0C1220;
-  --bfs: #7FA2FF; --bfs-soft: #1A2647; --log: #4FD1C1; --log-soft: #11302E; --tel: #B89AFF; --tel-soft: #261C44;
+  --bfs: #7FA2FF; --bfs-soft: #1A2647; --log: #4FD1C1; --log-soft: #11302E; --tel: #B89AFF; --tel-soft: #261C44; --io: #5CC8D4; --io-soft: #0F2E33;
   --pass: #5FD49A; --pass-bg: #123224; --warn: #F2C35B; --warn-bg: #332810;
   --block: #FF8A93; --block-bg: #3A1519; --review: #C2AEFF; --review-bg: #251C47;
   color-scheme: dark; } }
 :root[data-theme="dark"] {
   --bg: #0C1220; --surface: #141C2E; --ink: #E7ECF5; --muted: #9AA6BC; --line: #26324A;
   --accent: #7FA2FF; --accent-ink: #0C1220;
-  --bfs: #7FA2FF; --bfs-soft: #1A2647; --log: #4FD1C1; --log-soft: #11302E; --tel: #B89AFF; --tel-soft: #261C44;
+  --bfs: #7FA2FF; --bfs-soft: #1A2647; --log: #4FD1C1; --log-soft: #11302E; --tel: #B89AFF; --tel-soft: #261C44; --io: #5CC8D4; --io-soft: #0F2E33;
   --pass: #5FD49A; --pass-bg: #123224; --warn: #F2C35B; --warn-bg: #332810;
   --block: #FF8A93; --block-bg: #3A1519; --review: #C2AEFF; --review-bg: #251C47;
   color-scheme: dark;
@@ -112,6 +113,20 @@ details.script[open] summary { border-bottom: 1px solid var(--line); }
 .script-foot { padding: 6px 14px 14px; display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; }
 .script-foot a { color: var(--hue); font-weight: 600; text-underline-offset: 3px; }
 
+.tile[data-v="io"] { --hue: var(--io); --hue-soft: var(--io-soft); }
+.io { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+.io .tile-head { display: flex; flex-direction: column; }
+.flow { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.flow li { font: 500 12.5px/1.2 var(--mono); padding: 8px 10px; border: 1px solid var(--hue); border-radius: 6px; background: var(--surface); }
+.flow li.hl { background: var(--hue); color: var(--accent-ink); }
+.flow li.arrow { border: 0; background: none; padding: 0 2px; color: var(--muted); }
+.flow-notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+.flow-notes div { font-size: 13px; color: var(--muted); }
+.flow-notes b { display: block; color: var(--ink); font-size: 13.5px; margin-bottom: 2px; }
+.status { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+@media (max-width: 1080px) { .io { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 640px) { .flow-notes { grid-template-columns: minmax(0, 1fr); } }
+
 /* platform tiles */
 .platform { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
 .ptile { display: flex; flex-direction: column; gap: 10px; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; text-decoration: none; min-width: 0; transition: border-color .15s, transform .15s; }
@@ -148,6 +163,12 @@ footer { margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line);
     <p class="note" id="env-note"></p>
   </div>
   <section class="verticals" id="verticals" aria-label="Industry demos"></section>
+
+  <div class="section-head">
+    <h2>Interoperability</h2>
+    <p class="note">Bring your own observability vendor.</p>
+  </div>
+  <section id="interop" aria-label="Interoperability demo"></section>
 
   <div class="section-head">
     <h2>Platform</h2>
@@ -262,6 +283,41 @@ const VERTICALS = [
   },
 ];
 
+const INTEROP = {
+  title: "Plug in any assurance provider",
+  pitch: "MyBank's traces leave through OpenTelemetry. Quality scores come back from HoneyHive, Arize · Phoenix or Traceloop through one adapter interface and land in NeuroTrust's Tier 2 panel.",
+  flow: ["MyBank + RAI SDK", "OpenTelemetry", "HoneyHive · Arize · Phoenix · Traceloop", "Provider adapter", "Trust dashboard · Tier 2"],
+  notes: [
+    ["Data out is standard", "Changing vendors is 3 OpenTelemetry settings, with no code."],
+    ["Scores in are pluggable", "Each vendor is one adapter behind one interface. Switching is one setting."],
+    ["Nothing else changes", "The dashboard, thresholds, MyBank and the SDK stay the same."],
+  ],
+  status: [["PASS", "HoneyHive · live, real scores"], ["WARN", "Arize · wired, simulated until Phoenix is connected"]],
+  scenarios: [
+    ["Part 1 · Interoperability", "5 min. MyBank traces leave through OpenTelemetry; HoneyHive scores them; the scores land in Tier 2.", ["PASS"]],
+    ["Part 2 · Time windows", "3 min. Change the cockpit window and the Tier 2 metrics follow it.", []],
+    ["Part 3 · Live metrics", "5 min. Four prepared chats, scored by HoneyHive and by the local turn-level evaluator.", ["PASS"]],
+    ["Close · Findings and next", "2 min. HoneyHive live with real scores; Arize wired, simulated until Phoenix is connected.", ["PASS", "WARN"]],
+  ],
+  steps: [
+    ["Setup, 5 min before: open MyBank at http://127.0.0.1:5000 and the Trust cockpit. Select MYBANK in App Scope and window 7d.", ""],
+    ["Setup: open HoneyHive (Traces, then Completions) and a terminal in the repo folder.", ""],
+    ["Setup: send the 4 chats from Part 3 now, so their scores are ready. HoneyHive can take a few minutes to show new data.", ""],
+    ["Setup: score the turn-level metrics with venv/bin/python pap/tools/local_evaluator.py", ""],
+    ["Part 1 · Interoperability (5 min): MyBank → OpenTelemetry → HoneyHive → provider adapter → Tier 2.", "Data out is standard, scores in are pluggable, and nothing else changes."],
+    ["Part 2 · Time windows (3 min): change the cockpit window.", "The Tier 2 metrics follow the window you pick."],
+    ["Part 3 · Live metrics (5 min): show the four chats in HoneyHive, then their scores in Tier 2.", "Real scores from the client's own observability vendor, next to governance."],
+    ["Close · Findings and next (2 min).", "HoneyHive is live; Arize is wired and runs on simulated data until Phoenix is connected. Adding HoneyHive took one file plus a few lines of registration."],
+  ],
+  links: [
+    ["NeuroTrust cockpit · Tier 2", () => ENV.dashboard, "App Scope MYBANK · 7d"],
+    ["Open MyBank demo", () => "http://127.0.0.1:5000", "127.0.0.1:5000"],
+    ["HoneyHive", () => "https://app.honeyhive.ai", "app.honeyhive.ai"],
+    ["Arize", () => "https://app.arize.com", "app.arize.com"],
+    ["Traceloop", () => "https://app.traceloop.com", "app.traceloop.com"],
+  ],
+};
+
 const PLATFORM = [
   ["Platform", "NeuroTrust", "Apps, policy packs, policies and rules: how each client app is governed.", ENV.platform],
   ["Governance dashboard", "NeuroTrust Dashboard", "Cockpit, Eval Trail, Agent Registry, Trust Radar and Human Review across all apps.", ENV.dashboard],
@@ -305,6 +361,34 @@ document.getElementById("verticals").innerHTML = VERTICALS.map(t => `
       </details>
     </div>
   </article>`).join("");
+
+document.getElementById("interop").innerHTML = (t => `
+  <article class="tile io" data-v="io">
+    <div class="tile-head">
+      <p class="vert"><span>Interoperability</span><span>OpenTelemetry · assurance providers</span></p>
+      <h3>${esc(t.title)}</h3>
+      <p class="pitch">${esc(t.pitch)}</p>
+      <ol class="flow" aria-label="Data flow">${t.flow.map((f, i) =>
+        (i ? '<li class="arrow" aria-hidden="true">→</li>' : '') + `<li class="${i === 2 || i === 4 ? 'hl' : ''}">${esc(f)}</li>`).join("")}</ol>
+      <div class="flow-notes">${t.notes.map(([h, d]) => `<div><b>${esc(h)}</b>${esc(d)}</div>`).join("")}</div>
+      <div class="status">${t.status.map(([v, l]) => `<span class="v ${v}">${esc(l)}</span>`).join("")}</div>
+    </div>
+    <div class="tile-body">
+      <div>
+        <p class="label">Demo scenarios</p>
+        <ul class="scen">${t.scenarios.map(([n, d, vs]) => `
+          <li><div><b>${esc(n)}</b><small>${esc(d)}</small></div><div class="chips">${chips(vs)}</div></li>`).join("")}
+        </ul>
+      </div>
+      <div class="links">${t.links.map(([l, u, m], i) => `
+        <a class="btn${i === 0 ? ' primary' : ''}" href="${u()}"${ext(u())}>${esc(l)} <span class="meta">${esc(m)}</span></a>`).join("")}
+      </div>
+      <details class="script">
+        <summary>Demo script</summary>
+        <ol class="steps">${t.steps.map(([d, x]) => `<li>${esc(d)}${x ? `<span class="say">“${esc(x)}”</span>` : ""}</li>`).join("")}</ol>
+      </details>
+    </div>
+  </article>`)(INTEROP);
 
 document.getElementById("platform").innerHTML = PLATFORM.map(([kind, name, desc, url]) => `
   <a class="ptile" href="${url}"${ext(url)}>
