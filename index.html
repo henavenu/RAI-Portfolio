@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RAI Demo Portfolio</title>
+<meta name="description" content="Responsible AI demo portfolio: governed agentic apps for BFS, Retail & Logistics and Telecom on the NeuroTrust platform.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a header band, three vertical tiles side by side (stacking on narrow screens),
+   then a row of platform tiles. Each vertical has its own hue; verdict chips use the
+   four client labels (PASS / WARN / BLOCK / REVIEW). */
+:root {
+  --bg: #F3F5F8; --surface: #FFFFFF; --ink: #10192B; --muted: #566278; --line: #DCE2EB;
+  --accent: #1D4ED8; --accent-ink: #FFFFFF;
+  --bfs: #1D4ED8; --bfs-soft: #E6EDFD;
+  --log: #0F766E; --log-soft: #E1F3F1;
+  --tel: #7C3AED; --tel-soft: #EFE8FD;
+  --pass: #0B7A45; --pass-bg: #E3F4EA; --warn: #8A6100; --warn-bg: #FBF0D4;
+  --block: #B42330; --block-bg: #FBE4E6; --review: #5B3FB8; --review-bg: #ECE6FB;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0C1220; --surface: #141C2E; --ink: #E7ECF5; --muted: #9AA6BC; --line: #26324A;
+  --accent: #7FA2FF; --accent-ink: #0C1220;
+  --bfs: #7FA2FF; --bfs-soft: #1A2647; --log: #4FD1C1; --log-soft: #11302E; --tel: #B89AFF; --tel-soft: #261C44;
+  --pass: #5FD49A; --pass-bg: #123224; --warn: #F2C35B; --warn-bg: #332810;
+  --block: #FF8A93; --block-bg: #3A1519; --review: #C2AEFF; --review-bg: #251C47;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0C1220; --surface: #141C2E; --ink: #E7ECF5; --muted: #9AA6BC; --line: #26324A;
+  --accent: #7FA2FF; --accent-ink: #0C1220;
+  --bfs: #7FA2FF; --bfs-soft: #1A2647; --log: #4FD1C1; --log-soft: #11302E; --tel: #B89AFF; --tel-soft: #261C44;
+  --pass: #5FD49A; --pass-bg: #123224; --warn: #F2C35B; --warn-bg: #332810;
+  --block: #FF8A93; --block-bg: #3A1519; --review: #C2AEFF; --review-bg: #251C47;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 var(--body); }
+.wrap { max-width: 1320px; margin: 0 auto; padding-inline: clamp(16px, 3vw, 40px); padding-block: 40px 56px; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+/* header */
+header { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; }
+h1 { font: 800 clamp(34px, 5vw, 56px)/1 var(--display); font-stretch: 82%; letter-spacing: -.01em; margin: 0; text-wrap: balance; }
+.lede { margin: 14px 0 0; max-width: 62ch; color: var(--muted); font-size: 16px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; max-width: 300px; }
+.legend p { width: 100%; margin: 0 0 4px; text-align: right; font: 500 11px/1.3 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+/* verdict chips */
+.v { display: inline-block; font: 500 11px/1 var(--mono); letter-spacing: .06em; padding: 4px 7px; border-radius: 4px; white-space: nowrap; }
+.v.PASS { color: var(--pass); background: var(--pass-bg); }
+.v.WARN { color: var(--warn); background: var(--warn-bg); }
+.v.BLOCK { color: var(--block); background: var(--block-bg); }
+.v.REVIEW { color: var(--review); background: var(--review-bg); }
+
+/* section heads */
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin: 40px 0 16px; }
+h2 { font: 700 22px/1.2 var(--display); font-stretch: 88%; margin: 0; }
+.note { font-size: 13px; color: var(--muted); margin: 0; }
+.note code { font: 12px var(--mono); }
+
+/* vertical tiles */
+.verticals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.tile-head { padding: 20px 22px 18px; background: var(--hue-soft); }
+.tile[data-v="bfs"] { --hue: var(--bfs); --hue-soft: var(--bfs-soft); }
+.tile[data-v="log"] { --hue: var(--log); --hue-soft: var(--log-soft); }
+.tile[data-v="tel"] { --hue: var(--tel); --hue-soft: var(--tel-soft); }
+.vert { display: flex; align-items: center; justify-content: space-between; gap: 10px; font: 500 12px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--hue); margin: 0 0 12px; }
+.vert span:last-child { color: var(--muted); letter-spacing: .04em; text-transform: none; }
+.tile h3 { font: 800 28px/1.05 var(--display); font-stretch: 80%; margin: 0; }
+.tile .pitch { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
+.tile-body { padding: 18px 22px 22px; display: flex; flex-direction: column; gap: 18px; }
+.label { font: 500 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+
+.scen { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.scen li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 9px 0; border-top: 1px solid var(--line); }
+.scen li:first-child { border-top: 0; padding-top: 0; }
+.scen b { font-weight: 600; display: block; }
+.scen small { display: block; color: var(--muted); font-size: 13px; line-height: 1.45; margin-top: 2px; }
+.scen .chips { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; max-width: 140px; }
+
+.links { display: grid; gap: 8px; }
+.btn { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 14px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; border: 1px solid var(--line); background: var(--surface); transition: border-color .15s, background .15s; }
+.btn:hover { border-color: var(--hue, var(--accent)); }
+.btn.primary { background: var(--hue); border-color: var(--hue); color: var(--accent-ink); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn .meta { font: 400 12px var(--mono); opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.cred { font: 12.5px var(--mono); color: var(--muted); margin: 0; }
+.cred b { color: var(--ink); font-weight: 500; }
+
+details.script { border: 1px solid var(--line); border-radius: 8px; }
+details.script summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 14px; font-weight: 600; font-size: 14px; }
+details.script summary::-webkit-details-marker { display: none; }
+details.script summary::after { content: "Show"; font: 400 12px var(--mono); color: var(--muted); }
+details.script[open] summary::after { content: "Hide"; }
+details.script[open] summary { border-bottom: 1px solid var(--line); }
+.steps { margin: 0; padding: 12px 14px 4px 34px; display: grid; gap: 10px; font-size: 13.5px; }
+.steps li::marker { font: 500 12px var(--mono); color: var(--muted); }
+.steps .say { display: block; color: var(--muted); font-style: italic; margin-top: 2px; }
+.script-foot { padding: 6px 14px 14px; display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; }
+.script-foot a { color: var(--hue); font-weight: 600; text-underline-offset: 3px; }
+
+/* platform tiles */
+.platform { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.ptile { display: flex; flex-direction: column; gap: 10px; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; text-decoration: none; min-width: 0; transition: border-color .15s, transform .15s; }
+.ptile:hover { border-color: var(--accent); transform: translateY(-2px); }
+.ptile .kind { font: 500 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.ptile h3 { font: 800 24px/1.1 var(--display); font-stretch: 82%; margin: 0; }
+.ptile p { margin: 0; color: var(--muted); font-size: 14px; }
+.ptile .url { margin-top: auto; padding-top: 8px; font: 12px var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+.ptile .go { font-weight: 600; color: var(--accent); font-size: 14px; }
+
+footer { margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+
+@media (max-width: 1080px) { .verticals, .platform { grid-template-columns: minmax(0, 1fr); } .scen .chips { max-width: none; } }
+@media (max-width: 640px) { header { grid-template-columns: minmax(0, 1fr); } .legend { justify-content: flex-start; } .legend p { text-align: left; } }
+@media (prefers-reduced-motion: reduce) { .ptile, .btn { transition: none; } .ptile:hover { transform: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Responsible AI · NeuroTrust platform</p>
+      <h1>RAI Demo Portfolio</h1>
+      <p class="lede">Three industry apps whose agents act under live governance. Every agent action is checked by NeuroTrust before it runs. It goes through, is flagged, is stopped, or waits for a person.</p>
+    </div>
+    <div class="legend" aria-label="Verdict labels">
+      <p>What the apps show</p>
+      <span class="v PASS">PASS</span><span class="v WARN">WARN</span><span class="v BLOCK">BLOCK</span><span class="v REVIEW">REVIEW</span>
+    </div>
+  </header>
+
+  <div class="section-head">
+    <h2>Industry demos</h2>
+    <p class="note" id="env-note"></p>
+  </div>
+  <section class="verticals" id="verticals" aria-label="Industry demos"></section>
+
+  <div class="section-head">
+    <h2>Platform</h2>
+    <p class="note">Open the dashboard from <code>:3080</code>. On <code>:3004</code> the Human Review tab looks empty.</p>
+  </div>
+  <section class="platform" id="platform" aria-label="Platform links"></section>
+
+  <footer>
+    <span>Demo environment: local NeuroTrust beta stack on the presenter's Mac. GCP links will replace these.</span>
+    <span>Agentic AI governance · agent passports · human oversight</span>
+  </footer>
+</div>
+
+<script>
+// ── Links: change these to point the portfolio at another environment (e.g. GCP). ──
+const ENV = {
+  name: "Local demo stack",
+  dashboard: "http://127.0.0.1:3080/ui/dashboard",
+  humanReview: "http://127.0.0.1:3080/ui/dashboard?goto=hitl",
+  platform: "http://127.0.0.1:3080/ui",
+  agentActivity: app => "http://127.0.0.1:3080/ui/agent-activity?app_id=" + app + "&window_min=60",
+  guide: "https://henavenu.github.io/interactive-accountability-instrument/",
+};
+
+const VERTICALS = [
+  {
+    v: "bfs", vertical: "BFS", sector: "Banking & Financial Services",
+    app: "MyBank", app_id: "mybank", url: "http://127.0.0.1:5000", login: ["alex.morgan", "1234"],
+    pitch: "A retail banking assistant with account, domestic transfer, international wire and card agents.",
+    scenarios: [
+      ["Everyday banking", "Balance, transactions, profile, a $200 transfer.", ["PASS"]],
+      ["Travel-card recommendation", "Card Advisor and Card Researcher negotiate over 5 rounds; the platform calls in a person.", ["REVIEW"]],
+      ["Agent boundary excursion", "$25k overseas by the fastest channel: an agent tries to act outside its scope.", ["BLOCK"]],
+      ["Sanctions wire", "International wire to a Russian IBAN/SWIFT.", ["BLOCK"]],
+      ["Structuring", "Three domestic transfers whose total crosses $8,500.", ["PASS", "PASS", "BLOCK"]],
+      ["Fraud Review Authority", "Four reviewer agents deadlock 2–2 on a declined $12,000 card charge.", ["REVIEW"]],
+    ],
+    steps: [
+      ["Sign in, run Quick Actions: balance, transactions, profile.", "Everyday work runs freely, and every action is still evaluated."],
+      ["Ask for a travel card for 40+ countries that earns miles.", "Two agents negotiate. After the fifth exchange the platform asks a person to choose."],
+      ["Open Human Review and pick the card.", "The human decision goes back into the conversation."],
+      ["Ask to send $25,000 overseas by the fastest channel.", "The agent tries a route outside its authority. BLOCK."],
+      ["Run the sanctions wire (Russia IBAN).", "Sanctions screening stops it before money moves. BLOCK."],
+      ["Run the domestic transfer three times.", "PASS, PASS, BLOCK: the running total crosses $8,500, a structuring pattern."],
+      ["Ask: “Why was my recent $12,000 card transaction declined?”", "Four reviewers split 2–2, the coordinator can't break the tie, and the platform escalates to a person in two stages."],
+    ],
+    scriptLinks: [],
+  },
+  {
+    v: "log", vertical: "Retail & Logistics", sector: "Pharma distribution · US → EU",
+    app: "PharmaLogistics", app_id: "pharmalogistics", url: "http://127.0.0.1:5001", login: ["dana.reyes", "1234"],
+    extra: [["Agent passports", "http://127.0.0.1:5001/passports"]],
+    pitch: "A pharma distributor's agents: order intake, inventory, routing, cross-border release and a diversion review board.",
+    scenarios: [
+      ["Agent passports and risk tiers", "Cross-Border Logistics is Tier 4: crossing a jurisdiction sets it alone.", []],
+      ["US release", "US stamp: Execute, human on the loop. The agent acts.", ["PASS"]],
+      ["EU release", "Same agent, same action. The EU stamp allows only a recommendation, so a Qualified Person certifies.", ["REVIEW"]],
+      ["Embargoed shipment", "Russian consignee on the denied-party list.", ["BLOCK"]],
+      ["Cold-chain excursion", "Asked to skip cold-chain validation, the Route Optimizer goes out of scope.", ["BLOCK"]],
+      ["Controlled-substance structuring", "Three orders together cross the 8,500-unit DEA threshold.", ["PASS", "PASS", "BLOCK"]],
+      ["Diversion Review Board", "Four reviewers deadlock 2–2 on a held $12,000 order.", ["REVIEW"]],
+      ["Agent registry", "14 agent cards; one agent in passport mode.", []],
+    ],
+    steps: [
+      ["Passports page → Cross-Border Logistics.", "Tier 4, valid 6 months. US stamp Execute · HOTL; EU stamp Assist · HITL, a Qualified Person certifies."],
+      ["App → 🇺🇸 Release · US.", "The agent acts and a human monitors. PASS."],
+      ["App → 🇪🇺 Release · EU.", "Same agent, same action, held. The app stamps the passport on the call and the platform's rule turns it into a review."],
+      ["Click Open Human Review ↗ → Approve.", "The Qualified Person certifies; the release completes, recorded as QP-CERTIFIED."],
+      ["Embargoed shipment.", "Passports never override sanctions. BLOCK."],
+      ["Cold-chain excursion prompt.", "Agents can't trade product safety for speed. BLOCK."],
+      ["Controlled-substance orders ×3.", "PASS, PASS, BLOCK: a diversion pattern across orders."],
+      ["Diversion Review Board prompt → Human Review.", "Legitimate but conflicting goals end in an accountable human decision."],
+      ["Dashboard → Agent Registry → pharmalogistics.", "One inventory of every agent's authority, owner and oversight."],
+    ],
+    scriptLinks: [
+      ["Full demo guide", "https://github.com/henavenu/RAILogisticsClient/blob/beta-standalone/docs/DEMO_GUIDE.md"],
+      ["Short script", "https://github.com/henavenu/RAILogisticsClient/blob/beta-standalone/docs/DEMO_PASSPORT_SHORT.md"],
+    ],
+  },
+  {
+    v: "tel", vertical: "Telecom", sector: "US mobile carrier",
+    app: "TeleNova", app_id: "telenova", url: "http://127.0.0.1:5002", login: ["jordan.ellis", "1234"],
+    extra: [["Agent passports", "http://127.0.0.1:5002/passports"]],
+    pitch: "Nova, a carrier's care assistant with billing, provisioning, SIM & porting, retention and account-recovery agents.",
+    scenarios: [
+      ["Credit within authority", "$25 outage credit goes through; $400 is beyond the Billing Agent's limit.", ["PASS", "BLOCK"]],
+      ["Billed after deactivation", "Home Internet still billed; the $100 refund waits for a billing check.", ["REVIEW"]],
+      ["Third-party charges (cramming)", "Partner subscription without the customer's consent.", ["BLOCK"]],
+      ["Call-forwarding fraud", "Forwarding to a +882 premium range used in revenue-share fraud.", ["BLOCK"]],
+      ["SIM change and takeover signals", "No secure code: blocked. Email code plus takeover signals: fraud desk.", ["BLOCK", "REVIEW"]],
+      ["Port-out velocity", "Third port-out request in 24 hours.", ["PASS", "PASS", "BLOCK"]],
+      ["Cross-org passport check", "Northwind presents a passport TeleNova recognises; QuickTel doesn't.", ["PASS", "REVIEW"]],
+      ["Retention offer fairness", "Offer keyed on postcode, a proxy attribute; compliance is told.", ["WARN"]],
+      ["Account Recovery Board", "Unrequested port-out: four reviewers deadlock 2–2.", ["REVIEW"]],
+    ],
+    steps: [
+      ["Explain my bill.", "Everyday care runs freely; Nova spots Home Internet still billed. PASS."],
+      ["$25 outage credit, then $400 credit.", "The $50 authority lives on the platform, not in the prompt. PASS, then BLOCK."],
+      ["Still charged for Home Internet → Open Human Review ↗ → Approve.", "Billed after deactivation, the Telstra pattern. A person approves the $100 refund."],
+      ["Apply partner offers.", "No consent, no third-party charge: the cramming case behind T-Mobile's $90M settlement. BLOCK."],
+      ["Forward calls to +882….", "Premium-rate fraud range. US numbers forward fine. BLOCK."],
+      ["Lost phone, no code → then Verified by email — new iPhone.", "No secure auth is blocked. With a code but takeover signals, the fraud desk decides. REVIEW → Approve."],
+      ["Reset demo, then Port to Northwind ×3.", "The agent reports the count; the platform decides. PASS, PASS, BLOCK."],
+      ["Port to QuickTel, then show /passports → SIM & Porting Agent.", "Cross-organisation trust is checked per transaction. REVIEW."],
+      ["Thinking of switching.", "The offer goes out, flagged for fairness. WARN."],
+      ["My number was ported without me → Human Review.", "Fraud and Compliance want the freeze; Retention and Care want service back. A person decides."],
+    ],
+    scriptLinks: [],
+  },
+];
+
+const PLATFORM = [
+  ["Platform", "NeuroTrust", "Apps, policy packs, policies and rules: how each client app is governed.", ENV.platform],
+  ["Governance dashboard", "NeuroTrust Dashboard", "Cockpit, Eval Trail, Agent Registry, Trust Radar and Human Review across all apps.", ENV.dashboard],
+  ["Interactive guide", "Accountability Instrument", "An interactive guide to agent accountability: risk tiers, oversight models and passports.", ENV.guide],
+];
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const ext = u => /^https?:/.test(u) ? ' target="_blank" rel="noopener"' : "";
+const chips = vs => vs.map(v => `<span class="v ${v}">${v}</span>`).join("");
+
+document.getElementById("env-note").textContent = "Links: " + ENV.name;
+
+document.getElementById("verticals").innerHTML = VERTICALS.map(t => `
+  <article class="tile" data-v="${t.v}">
+    <div class="tile-head">
+      <p class="vert"><span>${esc(t.vertical)}</span><span>${esc(t.sector)}</span></p>
+      <h3>${esc(t.app)}</h3>
+      <p class="pitch">${esc(t.pitch)}</p>
+    </div>
+    <div class="tile-body">
+      <div>
+        <p class="label">Demo scenarios</p>
+        <ul class="scen">${t.scenarios.map(([n, d, vs]) => `
+          <li><div><b>${esc(n)}</b><small>${esc(d)}</small></div><div class="chips">${chips(vs)}</div></li>`).join("")}
+        </ul>
+      </div>
+      <div class="links">
+        <a class="btn primary" href="${t.url}"${ext(t.url)}>Open ${esc(t.app)} demo <span class="meta">${esc(t.url.replace(/^https?:\/\//, ""))}</span></a>
+        ${(t.extra || []).map(([l, u]) => `<a class="btn" href="${u}"${ext(u)}>${esc(l)} <span class="meta">/passports</span></a>`).join("")}
+        <a class="btn" href="${ENV.agentActivity(t.app_id)}"${ext(ENV.agentActivity(t.app_id))}>NeuroTrust · ${esc(t.app)} agents <span class="meta">Agent Activity</span></a>
+        <a class="btn" href="${ENV.humanReview}"${ext(ENV.humanReview)}>NeuroTrust · Human Review <span class="meta">dashboard</span></a>
+        <p class="cred">Sign in: <b>${esc(t.login[0])}</b> · PIN <b>${esc(t.login[1])}</b></p>
+      </div>
+      <details class="script">
+        <summary>Demo script</summary>
+        <ol class="steps">${t.steps.map(([d, s]) => `<li>${esc(d)}<span class="say">“${esc(s)}”</span></li>`).join("")}</ol>
+        <div class="script-foot">
+          <a href="${t.url}"${ext(t.url)}>Start the demo ↗</a>
+          ${t.scriptLinks.map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener">${esc(l)} ↗</a>`).join("")}
+        </div>
+      </details>
+    </div>
+  </article>`).join("");
+
+document.getElementById("platform").innerHTML = PLATFORM.map(([kind, name, desc, url]) => `
+  <a class="ptile" href="${url}"${ext(url)}>
+    <span class="kind">${esc(kind)}</span>
+    <h3>${esc(name)}</h3>
+    <p>${esc(desc)}</p>
+    <span class="url">${esc(url.replace(/^https?:\/\//, ""))}</span>
+    <span class="go">Open ↗</span>
+  </a>`).join("");
+</script>
+</body>
+</html>
