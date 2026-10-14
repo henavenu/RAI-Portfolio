@@ -96,6 +96,8 @@ h2 { font: 700 22px/1.2 var(--display); font-stretch: 88%; margin: 0; }
 .btn.primary:hover { filter: brightness(1.08); }
 .btn .meta { font: 400 12px var(--mono); opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .cred { font: 12.5px var(--mono); color: var(--muted); margin: 0; }
+.open-demo { margin-top: 16px; }
+.tile-head .cred { margin-top: 8px; }
 .cred b { color: var(--ink); font-weight: 500; }
 
 details.script { border: 1px solid var(--line); border-radius: 8px; }
@@ -198,7 +200,7 @@ const VERTICALS = [
     v: "log", vertical: "Retail & Logistics", sector: "Pharma · US → EU",
     app: "VitaLink Distribution", app_id: "pharmalogistics", url: "http://127.0.0.1:5001", login: ["dana.reyes", "1234"],
     extra: [["Agent passports", "http://127.0.0.1:5001/passports"]],
-    pitch: "A pharma distributor's agents: order intake, inventory, routing, cross-border release and a diversion review board.",
+    pitch: "A pharma distributor's agents: order intake, routing, cross-border release and diversion review.",
     scenarios: [
       ["Agent passports and risk tiers", "Cross-Border Logistics is Tier 4: crossing a jurisdiction sets it alone.", []],
       ["US release", "US stamp: Execute, human on the loop. The agent acts.", ["PASS"]],
@@ -278,6 +280,8 @@ document.getElementById("verticals").innerHTML = VERTICALS.map(t => `
       <p class="vert"><span>${esc(t.vertical)}</span><span>${esc(t.sector)}</span></p>
       <h3>${esc(t.app)}</h3>
       <p class="pitch">${esc(t.pitch)}</p>
+      <a class="btn primary open-demo" href="${t.url}"${ext(t.url)}>Open ${esc(t.app)} demo <span class="meta">${esc(t.url.replace(/^https?:\/\//, ""))}</span></a>
+      <p class="cred">Sign in: <b>${esc(t.login[0])}</b> · PIN <b>${esc(t.login[1])}</b></p>
     </div>
     <div class="tile-body">
       <div>
@@ -287,11 +291,9 @@ document.getElementById("verticals").innerHTML = VERTICALS.map(t => `
         </ul>
       </div>
       <div class="links">
-        <a class="btn primary" href="${t.url}"${ext(t.url)}>Open ${esc(t.app)} demo <span class="meta">${esc(t.url.replace(/^https?:\/\//, ""))}</span></a>
         ${(t.extra || []).map(([l, u]) => `<a class="btn" href="${u}"${ext(u)}>${esc(l)} <span class="meta">/passports</span></a>`).join("")}
         <a class="btn" href="${ENV.agentActivity(t.app_id)}"${ext(ENV.agentActivity(t.app_id))}>NeuroTrust · ${esc(t.app)} agents <span class="meta">Agent Activity</span></a>
         <a class="btn" href="${ENV.humanReview}"${ext(ENV.humanReview)}>NeuroTrust · Human Review <span class="meta">dashboard</span></a>
-        <p class="cred">Sign in: <b>${esc(t.login[0])}</b> · PIN <b>${esc(t.login[1])}</b></p>
       </div>
       <details class="script">
         <summary>Demo script</summary>
