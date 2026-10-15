@@ -71,7 +71,7 @@ h2 { font: 700 22px/1.2 var(--display); font-stretch: 88%; margin: 0; }
 
 /* vertical tiles */
 .verticals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start; }
-.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.tile { scroll-margin-top: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
 .tile-head { padding: 20px 22px 18px; background: var(--hue-soft); }
 .tile[data-v="bfs"] { --hue: var(--bfs); --hue-soft: var(--bfs-soft); }
 .tile[data-v="log"] { --hue: var(--log); --hue-soft: var(--log-soft); }
@@ -331,7 +331,7 @@ const chips = vs => vs.map(v => `<span class="v ${v}">${v}</span>`).join("");
 document.getElementById("env-note").textContent = "Links: " + ENV.name;
 
 document.getElementById("verticals").innerHTML = VERTICALS.map(t => `
-  <article class="tile" data-v="${t.v}">
+  <article class="tile" data-v="${t.v}" id="${t.app.split(" ")[0].toLowerCase()}">
     <div class="tile-head">
       <p class="vert"><span>${esc(t.vertical)}</span><span>${esc(t.sector)}</span></p>
       <h3>${esc(t.app)}</h3>
@@ -361,6 +361,7 @@ document.getElementById("verticals").innerHTML = VERTICALS.map(t => `
       </details>
     </div>
   </article>`).join("");
+if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
 
 document.getElementById("interop").innerHTML = (t => `
   <article class="tile io" data-v="io">
